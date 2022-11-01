@@ -9,6 +9,7 @@
 ## Todo
 - [x] Train simple model on Flux
 - [x] Try it in Float32 and Float64, 
+- [ ] Float32SR
 - [x] Float16
 - [ ] Move to GPU
 - [ ] Data loader
@@ -50,3 +51,26 @@
     # The loss function  Here is MSE
     loss(x, y) = Flux.Losses.mse(predict(x), y);
     ```
+    - Cuda support for Flux https://github.com/FluxML/NNlibCUDA.jl/blob/master/src/cudnn/conv.jl#L11
+    - 
+
+    - useful Have not tried but https://github.com/FluxML/NNlibCUDA.jl/blob/master/src/cudnn/conv.jl#L11 looks promising. For Flux you’d probably want an f16 like https://github.com/FluxML/Flux.jl/blob/d21460060e055dca1837c488005f6b1a8e87fa1b/src/functor.jl#L217 to change all types
+  - To change the type 
+      ```predict = Dense(rand(Float16,1,1),true) # true is for bias, 1 input and 1 output
+
+      #changing the type from Float16 to Float64
+        parameters = Flux.params(predict)
+
+        println("type of the parameters", typeof.(parameters)) 
+
+        cfun(x::AbstractArray) = Float64.(x); 
+        cfun(x) = x; #Noop for stuff which is not arrays (e.g. activation functions)
+        m64 = Flux.fmap(cfun, predict);
+
+        println("type of the parameters", typeof.(Flux.params(m64))) 
+
+
+        f16(m) = Flux.paramtype(Float16, m) # similar to https://github.com/FluxML/Flux.jl/blob/d21460060e055dca1837c488005f6b1a8e87fa1b/src/functor.jl#L217
+
+        m16 = f16(m64)
+        println("type of the parameters", typeof.(Flux.params(m16)))```
