@@ -56,7 +56,8 @@
 
     - useful Have not tried but https://github.com/FluxML/NNlibCUDA.jl/blob/master/src/cudnn/conv.jl#L11 looks promising. For Flux you’d probably want an f16 like https://github.com/FluxML/Flux.jl/blob/d21460060e055dca1837c488005f6b1a8e87fa1b/src/functor.jl#L217 to change all types
   - To change the type 
-      ```predict = Dense(rand(Float16,1,1),true) # true is for bias, 1 input and 1 output
+      ```
+      predict = Dense(rand(Float16,1,1),true) # true is for bias, 1 input and 1 output
 
       #changing the type from Float16 to Float64
         parameters = Flux.params(predict)
