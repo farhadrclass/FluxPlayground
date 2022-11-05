@@ -165,22 +165,20 @@ f16(m) = Flux.paramtype(Float16, m) # similar to https://github.com/FluxML/Flux.
 m16 = f16(model2)
 
 
-x = Float1.(rand(10))
+x = Float16.(rand(10))
 
 y = m16(x) # => 2-element vector
 
 
 #changing the type from Float16 to Float64
-θ2 = Flux.params(model2)
+θ3 = Flux.params(m16)
 
-println("type of the parameters", typeof.(θ2)) 
-
-
+println("type of the parameters", typeof.(θ3)) 
 
 
-θ2_bar = gradient(() -> loss(model2(x), y), θ2)
+θ3_bar = gradient(() -> loss(m16(x), y), θ3)
 
 
-for p in θ2
-    println(p, θ2_bar[p])
+for p in θ3
+    println(p, θ3_bar[p])
 end

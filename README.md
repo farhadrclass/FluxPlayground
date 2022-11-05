@@ -29,6 +29,72 @@
 - using https://fluxml.ai/Flux.jl/stable/models/basics/
 - we will use the param function to allow us to change to gpu,type and more robust..
 
+ have been working on the Flux grad , good news is that we have access to it similar to how knetnlpmodel does 
+
+Flux (Float116 and 64)
+```julia
+##########3
+model2 = Chain(
+  Dense(10 => 5, σ),
+  Dense(5 => 2),
+  softmax)
+
+y = model2(rand(10)) # => 2-element vector
+x = rand(10)
+
+#changing the type from Float16 to Float64
+θ2 = Flux.params(model2)
+
+println("type of the parameters", typeof.(θ2)) 
+
+
+
+
+θ2_bar = gradient(() -> loss(model2(x), y), θ2)
+
+
+for p in θ2
+    println(p, θ2_bar[p])
+end
+
+
+#turn it into Float16
+
+f16(m) = Flux.paramtype(Float16, m) # similar to https://github.com/FluxML/Flux.jl/blob/d21460060e055dca1837c488005f6b1a8e87fa1b/src/functor.jl#L217
+
+m16 = f16(model2)
+
+
+x = Float16.(rand(10))
+
+y = m16(x) # => 2-element vector
+
+
+#changing the type from Float16 to Float64
+θ3 = Flux.params(m16)
+
+println("type of the parameters", typeof.(θ3)) 
+
+
+θ3_bar = gradient(() -> loss(m16(x), y), θ3)
+
+
+for p in θ3
+    println(p, θ3_bar[p])
+end
+```
+The way that KnetNlpModels uses this:
+```julia
+ L = Knet.@diff nlp.chain(nlp.current_training_minibatch)
+  vars = Knet.params(nlp.chain)
+  for (index, wᵢ) in enumerate(vars)
+    nlp.layers_g[index] = Param(Knet.grad(L, wᵢ))
+  end
+  g .= Vector(vcat_arrays_vector(nlp.layers_g))
+  return g
+```
+
+
 ## Notes:
 - for Optimizer details http://fluxml.ai/Flux.jl/stable/training/optimisers/
 - Parameters
