@@ -10,6 +10,9 @@
 - [x] Train simple model on Flux
 - [x] Try it in Float32 and Float64, 
 - [ ] Float32SR
+- [ ] Grad in Flux --Zygote  slow(check if we can overridde)
+- [ ] Zygote  is limited such as inplace gradient and can be slow
+- [ ] SR gradian
 - [x] Float16
 - [ ] Move to GPU
 - [ ] Data loader
@@ -22,7 +25,9 @@
 - Line of best fit 
   - Dense(1 => 1) also implements the function σ(Wx+b) where W and b are the weights and biases. σ is an activation function (more on activations later).  
 
-
+## gradient:
+- using https://fluxml.ai/Flux.jl/stable/models/basics/
+- we will use the param function to allow us to change to gpu,type and more robust..
 
 ## Notes:
 - for Optimizer details http://fluxml.ai/Flux.jl/stable/training/optimisers/
